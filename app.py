@@ -21,7 +21,19 @@ sayfa = st.sidebar.selectbox(
 )
 
 st.title("⚙️ GEORG Slitting Optimizer")
+st.header("📄 Sipariş Dosyası")
 
+siparis_dosyasi = st.file_uploader(
+    "Sipariş Excel dosyasını seçiniz",
+    type=["xlsx"]
+)
+
+if siparis_dosyasi is not None:
+    df = pd.read_excel(siparis_dosyasi)
+
+    st.success("Dosya başarıyla yüklendi.")
+
+    st.dataframe(df)
 st.divider()
 
 col1, col2 = st.columns(2)
