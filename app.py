@@ -1,20 +1,13 @@
 import streamlit as st
 import pandas as pd
-st.sidebar.title("⚙️ Menü")
-
-menu = st.sidebar.radio(
-    "Sayfa Seç",
-    [
-        "Ana Sayfa",
-        "Siparişler",
-        "Mother Coil",
-        "Optimizasyon",
-        "Sonuçlar"
-    ]
-)
 
 st.set_page_config(
-    st.sidebar.title("⚙️ Menü")
+    page_title="GEORG Slitting Optimizer",
+    page_icon="⚙️",
+    layout="wide"
+)
+
+st.sidebar.title("⚙️ Menü")
 
 sayfa = st.sidebar.selectbox(
     "Sayfa Seç",
@@ -25,10 +18,6 @@ sayfa = st.sidebar.selectbox(
         "Optimizasyon",
         "Sonuçlar"
     ]
-)
-    page_title="GEORG Slitting Optimizer",
-    page_icon="⚙️",
-    layout="wide"
 )
 
 st.title("⚙️ GEORG Slitting Optimizer")
