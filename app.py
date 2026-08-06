@@ -1,5 +1,17 @@
 import streamlit as st
 import pandas as pd
+st.sidebar.title("⚙️ Menü")
+
+menu = st.sidebar.radio(
+    "Sayfa Seç",
+    [
+        "Ana Sayfa",
+        "Siparişler",
+        "Mother Coil",
+        "Optimizasyon",
+        "Sonuçlar"
+    ]
+)
 
 st.set_page_config(
     page_title="GEORG Slitting Optimizer",
