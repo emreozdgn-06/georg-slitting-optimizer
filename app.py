@@ -19,35 +19,40 @@ sayfa = st.sidebar.selectbox(
         "Sonuçlar"
     ]
 )
+col1, col2 = st.columns(2)
 
-st.title("⚙️ GEORG Slitting Optimizer")
-st.header("📄 Sipariş Dosyası")
+with col1:
 
-siparis_dosyasi = st.file_uploader(
-    "Sipariş Excel dosyasını seçiniz",
-    type=["xlsx"]
-)
+    st.header("📄 Sipariş Dosyası")
 
-if siparis_dosyasi is not None:
-    df = pd.read_excel(siparis_dosyasi)
+    siparis_dosyasi = st.file_uploader(
+        "Sipariş Excel Dosyası",
+        type=["xlsx"]
+    )
 
-    st.success("Dosya başarıyla yüklendi.")
+    if siparis_dosyasi is not None:
 
-    st.dataframe(df)
+        df = pd.read_excel(siparis_dosyasi)
+
+        st.dataframe(df, use_container_width=True)
+
+with col2:
+
     st.header("📦 Mother Coil Dosyası")
 
-coil_dosyasi = st.file_uploader(
-    "Mother Coil Excel dosyasını seçiniz",
-    type=["xlsx"],
-    key="coil"
-)
+    coil_dosyasi = st.file_uploader(
+        "Mother Coil Excel Dosyası",
+        type=["xlsx"],
+        key="coil"
+    )
 
-if coil_dosyasi is not None:
-    df_coil = pd.read_excel(coil_dosyasi)
+    if coil_dosyasi is not None:
 
-    st.success("Mother Coil dosyası başarıyla yüklendi.")
+        df_coil = pd.read_excel(coil_dosyasi)
 
-    st.dataframe(df_coil)
+        st.dataframe(df_coil, use_container_width=True)
+st.title("⚙️ GEORG Slitting Optimizer")
+
 st.divider()
 
 col1, col2 = st.columns(2)
