@@ -34,6 +34,20 @@ if siparis_dosyasi is not None:
     st.success("Dosya başarıyla yüklendi.")
 
     st.dataframe(df)
+    st.header("📦 Mother Coil Dosyası")
+
+coil_dosyasi = st.file_uploader(
+    "Mother Coil Excel dosyasını seçiniz",
+    type=["xlsx"],
+    key="coil"
+)
+
+if coil_dosyasi is not None:
+    df_coil = pd.read_excel(coil_dosyasi)
+
+    st.success("Mother Coil dosyası başarıyla yüklendi.")
+
+    st.dataframe(df_coil)
 st.divider()
 
 col1, col2 = st.columns(2)
