@@ -14,6 +14,18 @@ menu = st.sidebar.radio(
 )
 
 st.set_page_config(
+    st.sidebar.title("⚙️ Menü")
+
+sayfa = st.sidebar.selectbox(
+    "Sayfa Seç",
+    [
+        "Ana Sayfa",
+        "Siparişler",
+        "Mother Coil",
+        "Optimizasyon",
+        "Sonuçlar"
+    ]
+)
     page_title="GEORG Slitting Optimizer",
     page_icon="⚙️",
     layout="wide"
