@@ -68,23 +68,23 @@ with col1:
                 genislik = int(sonuc.group(1))
                 siparisler[genislik] += kg
 
-        st.write("### Toplanmış Siparişler")
+           st.write("### Toplanmış Siparişler")
 
-        st.write("### Toplanmış Siparişler")
+        siparis_df = pd.DataFrame(
+            {
+                "En (mm)": list(siparisler.keys()),
+                "Kg": list(siparisler.values())
+            }
+        )
 
-siparis_df = pd.DataFrame(
-    {
-        "En (mm)": list(siparisler.keys()),
-        "Kg": list(siparisler.values())
-    }
-)
+        siparis_df = siparis_df.sort_values("En (mm)")
 
-siparis_df = siparis_df.sort_values("En (mm)")
+        st.dataframe(
+            siparis_df,
+            use_container_width=True
+        )
 
-st.dataframe(
-    siparis_df,
-    use_container_width=True
-)
+        
 with col2:
 
     st.header("📦 Mother Coil Dosyası")
@@ -194,5 +194,5 @@ if st.button("🚀 Optimizasyonu Başlat"):
 
             plan_df = pd.DataFrame(plan)
 
-            st.dataframe(plan_df, use_container_width=True)
+            
      
