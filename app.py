@@ -25,7 +25,6 @@ sayfa = st.sidebar.selectbox(
 st.divider()
 
 col1, col2 = st.columns(2)
-
 with col1:
     st.header("📄 Sipariş Dosyası")
 
@@ -33,19 +32,38 @@ with col1:
         "Sipariş Excel Dosyası",
         type=["xlsx"]
     )
-if siparis_dosyasi is not None:
-    df = pd.read_excel(siparis_dosyasi)
 
-    st.dataframe(df, use_container_width=True)
+    if siparis_dosyasi is not None:
 
-    st.write("### Sipariş Bilgileri")
+        import re
 
-    st.write(f"Toplam Satır : {len(df)}")
+        df = pd.read_excel(siparis_dosyasi)
 
-    st.write("Kolonlar:")
+        st.dataframe(df, use_container_width=True)
 
-    st.write(list(df.columns))
-   
+        st.write("### Sipariş Bilgileri")
+
+        st.write(f"Toplam Satır : {len(df)}")
+
+        st.write("Kolonlar:")
+        st.write(list(df.columns))
+
+        st.write("### Sipariş Listesi")
+
+        for i, satir in df.iterrows():
+
+            stok_adi = str(satir["Stok Adı"])
+
+            gereken = satir["Gereken Miktar"]
+
+            sonuc = re.search(r"x(\d+)\s*mm", stok_adi)
+
+            if sonuc:
+
+                genislik = int(sonuc.group(1))
+
+                st.write(f"{genislik} mm → {gereken} kg")
+
 with col2:
     st.header("📦 Mother Coil Dosyası")
 
