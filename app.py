@@ -175,7 +175,7 @@ if st.button("🚀 Optimizasyonu Başlat"):
             st.write(f"Toplam Genişlik : {sum(en_iyi)} mm")
             st.write(f"Fire : {en_fire} mm")
 
-                       st.write("### Dilme Planı")
+            st.write("### Dilme Planı")
 
             bicak_sayisi = len(en_iyi)
 
