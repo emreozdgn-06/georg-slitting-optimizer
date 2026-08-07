@@ -67,8 +67,7 @@ with col1:
 
                 genislik = int(sonuc.group(1))
                 siparisler[genislik] += kg
-
-           st.write("### Toplanmış Siparişler")
+        st.write("### Toplanmış Siparişler")
 
         siparis_df = pd.DataFrame(
             {
@@ -83,7 +82,7 @@ with col1:
             siparis_df,
             use_container_width=True
         )
-
+          
         
 with col2:
 
@@ -179,7 +178,6 @@ if st.button("🚀 Optimizasyonu Başlat"):
             st.write("### Dilme Planı")
 
             plan = []
-
             for genislik in sorted(set(en_iyi)):
 
                 adet = en_iyi.count(genislik)
@@ -193,6 +191,12 @@ if st.button("🚀 Optimizasyonu Başlat"):
                 )
 
             plan_df = pd.DataFrame(plan)
+
+            st.dataframe(
+                plan_df,
+                use_container_width=True
+            )
+           
 
             
      
