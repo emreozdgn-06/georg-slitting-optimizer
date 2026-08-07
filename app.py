@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import re
 
 st.set_page_config(
     page_title="GEORG Slitting Optimizer",
@@ -9,6 +10,9 @@ st.set_page_config(
 
 st.title("⚙️ GEORG Dilme Optimizasyon Sistemi")
 
+# -----------------------------
+# SOL MENÜ
+# -----------------------------
 st.sidebar.title("⚙️ Menü")
 
 sayfa = st.sidebar.selectbox(
@@ -24,8 +28,13 @@ sayfa = st.sidebar.selectbox(
 
 st.divider()
 
+# -----------------------------
+# DOSYA YÜKLEME
+# -----------------------------
 col1, col2 = st.columns(2)
+
 with col1:
+
     st.header("📄 Sipariş Dosyası")
 
     siparis_dosyasi = st.file_uploader(
@@ -35,8 +44,6 @@ with col1:
 
     if siparis_dosyasi is not None:
 
-        import re
-
         df = pd.read_excel(siparis_dosyasi)
 
         st.dataframe(df, use_container_width=True)
@@ -45,26 +52,34 @@ with col1:
 
         st.write(f"Toplam Satır : {len(df)}")
 
-        st.write("Kolonlar:")
+        st.write("Kolonlar")
+
         st.write(list(df.columns))
 
         st.write("### Sipariş Listesi")
 
-        for i, satir in df.iterrows():
+        if "Stok Adı" in df.columns and "Gereken Miktar" in df.columns:
 
-            stok_adi = str(satir["Stok Adı"])
+            for _, satir in df.iterrows():
 
-            gereken = satir["Gereken Miktar"]
+                stok = str(satir["Stok Adı"])
 
-            sonuc = re.search(r"x(\d+)\s*mm", stok_adi)
+                kg = satir["Gereken Miktar"]
 
-            if sonuc:
+                sonuc = re.search(r"x(\d+)\s*mm", stok)
 
-                genislik = int(sonuc.group(1))
+                if sonuc:
 
-                st.write(f"{genislik} mm → {gereken} kg")
+                    genislik = int(sonuc.group(1))
+
+                    st.write(f"{genislik} mm → {kg} kg")
+
+        else:
+
+            st.warning("Excel dosyasında 'Stok Adı' veya 'Gereken Miktar' sütunu bulunamadı.")
 
 with col2:
+
     st.header("📦 Mother Coil Dosyası")
 
     coil_dosyasi = st.file_uploader(
@@ -74,11 +89,16 @@ with col2:
     )
 
     if coil_dosyasi is not None:
+
         df_coil = pd.read_excel(coil_dosyasi)
+
         st.dataframe(df_coil, use_container_width=True)
 
 st.divider()
 
+# -----------------------------
+# MAKİNE AYARLARI
+# -----------------------------
 st.header("⚙️ Makine Ayarları")
 
 coil_width = st.number_input(
@@ -101,36 +121,18 @@ max_knife = st.number_input(
     value=10
 )
 
+# -----------------------------
+# OPTİMİZASYON
+# -----------------------------
 if st.button("🚀 Optimizasyonu Başlat"):
 
-    kullanilabilir_genislik = (
-        coil_width
-        - left_trim
-        - right_trim
-    )
+    kullanilabilir_genislik = coil_width - left_trim - right_trim
 
     st.success("Optimizasyon Başladı")
 
-    st.write("### Makine Bilgileri")
+    st.write("## Makine Bilgileri")
 
     st.write(f"Mother Coil : {coil_width} mm")
     st.write(f"Sol Fire : {left_trim} mm")
     st.write(f"Sağ Fire : {right_trim} mm")
     st.write(f"Kullanılabilir Genişlik : {kullanilabilir_genislik} mm")
-import re
-
-st.write("### Sipariş Listesi")
-
-for i, satir in df.iterrows():
-
-    stok_adi = str(satir["Stok Adı"])
-
-    gereken = satir["Gereken Miktar"]
-
-    sonuc = re.search(r"x(\d+)\s*mm", stok_adi)
-
-    if sonuc:
-
-        genislik = int(sonuc.group(1))
-
-        st.write(f"{genislik} mm  →  {gereken} kg")
