@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
-import re
 from collections import defaultdict
+
 st.set_page_config(
     page_title="GEORG Slitting Optimizer",
     page_icon="⚙️",
@@ -13,6 +13,7 @@ st.title("⚙️ GEORG Dilme Optimizasyon Sistemi")
 # -----------------------------
 # SOL MENÜ
 # -----------------------------
+
 st.sidebar.title("⚙️ Menü")
 
 sayfa = st.sidebar.selectbox(
@@ -29,8 +30,19 @@ sayfa = st.sidebar.selectbox(
 st.divider()
 
 # -----------------------------
+# BAŞLANGIÇ DEĞERLERİ
+# -----------------------------
+
+siparisler = defaultdict(float)
+
+df_coil = None
+coil_width = None
+coil_kg = None
+
+# -----------------------------
 # DOSYA YÜKLEME
 # -----------------------------
+
 col1, col2 = st.columns(2)
 
 with col1:
@@ -39,50 +51,51 @@ with col1:
 
     siparis_dosyasi = st.file_uploader(
         "Sipariş Excel Dosyası",
-        type=["xlsx"]
+        type=["xlsx"],
+        key="siparis"
     )
 
     if siparis_dosyasi is not None:
 
         df = pd.read_excel(siparis_dosyasi)
 
-        st.dataframe(df, use_container_width=True)
-
-        st.write("### Sipariş Bilgileri")
-        st.write(f"Toplam Satır : {len(df)}")
-        st.write("Kolonlar")
-        st.write(list(df.columns))
-
-        siparisler = defaultdict(float)
-
-        for _, satir in df.iterrows():
-
-            stok = str(satir["Stok Adı"])
-            kg = float(satir["Gereken Miktar"])
-
-            sonuc = re.search(r"x(\d+)\s*mm", stok)
-
-            if sonuc:
-
-                genislik = int(sonuc.group(1))
-                siparisler[genislik] += kg
-        st.write("### Toplanmış Siparişler")
-
-        siparis_df = pd.DataFrame(
-            {
-                "En (mm)": list(siparisler.keys()),
-                "Kg": list(siparisler.values())
-            }
-        )
-
-        siparis_df = siparis_df.sort_values("En (mm)")
-
         st.dataframe(
-            siparis_df,
+            df,
             use_container_width=True
         )
-          
-        
+
+        if "En (mm)" in df.columns and "Kg" in df.columns:
+
+            for _, satir in df.iterrows():
+
+                genislik = int(satir["En (mm)"])
+                kg = float(satir["Kg"])
+
+                siparisler[genislik] += kg
+
+            st.write("### Toplanmış Siparişler")
+
+            siparis_df = pd.DataFrame(
+                {
+                    "En (mm)": list(siparisler.keys()),
+                    "Kg": list(siparisler.values())
+                }
+            )
+
+            siparis_df = siparis_df.sort_values("En (mm)")
+
+            st.dataframe(
+                siparis_df,
+                use_container_width=True
+            )
+
+        else:
+
+            st.error(
+                "Sipariş Excelinde 'En (mm)' ve 'Kg' kolonları bulunmalıdır."
+            )
+
+
 with col2:
 
     st.header("📦 Mother Coil Dosyası")
@@ -97,84 +110,128 @@ with col2:
 
         df_coil = pd.read_excel(coil_dosyasi)
 
-        st.dataframe(df_coil, use_container_width=True)
-        
-        ilk_coil = df_coil.iloc[0]
-        coil_width = float(ilk_coil["En (mm)"])
-        coil_kg = float(ilk_coil["Kg"])
-
-        st.write("### Seçilen İlk Mother Coil")
-        
-        st.write(f"Seçilen Coil Genişliği : {coil_width} mm")
-        st.write(f"Seçilen Coil Kg : {coil_kg} kg")
-        
-        st.write(ilk_coil)
-
-        st.write("### Mother Coil Bilgileri")
-
-        st.write(f"Toplam Coil : {len(df_coil)}")
-
-        st.write("Kolonlar")
-
-        st.write(list(df_coil.columns))
-
-        st.write("### Mother Coil Listesi")
-
         st.dataframe(
             df_coil,
             use_container_width=True
         )
+
+        if "En (mm)" in df_coil.columns and "Kg" in df_coil.columns:
+
+            ilk_coil = df_coil.iloc[0]
+
+            coil_width = float(
+                ilk_coil["En (mm)"]
+            )
+
+            coil_kg = float(
+                ilk_coil["Kg"]
+            )
+
+            st.write("### Seçilen İlk Mother Coil")
+
+            st.write(
+                f"Coil Genişliği : {coil_width:.0f} mm"
+            )
+
+            st.write(
+                f"Coil Ağırlığı : {coil_kg:.2f} kg"
+            )
+
+            st.write(
+                f"Toplam Mother Coil : {len(df_coil)} adet"
+            )
+
+        else:
+
+            st.error(
+                "Mother Coil Excelinde 'En (mm)' ve 'Kg' kolonları bulunmalıdır."
+            )
+
 
 st.divider()
 
 # -----------------------------
 # MAKİNE AYARLARI
 # -----------------------------
+
 st.header("⚙️ Makine Ayarları")
 
-coil_width = st.number_input(
-    "Mother Coil Genişliği (mm)",
-    value=1100
-)
-coil_kg = st.number_input(
-    "Mother Coil Kilogramı (kg)",
-    value=4000
-)
 left_trim = st.number_input(
     "Sol Fire (mm)",
+    min_value=0,
     value=5
 )
 
 right_trim = st.number_input(
     "Sağ Fire (mm)",
+    min_value=0,
     value=5
 )
 
 max_knife = st.number_input(
     "Maksimum Bıçak Sayısı",
+    min_value=1,
+    max_value=20,
     value=10
 )
+
 # -----------------------------
 # OPTİMİZASYON
 # -----------------------------
 
-if st.button("🚀 Optimizasyonu Başlat"):
+if st.button(
+    "🚀 Optimizasyonu Başlat",
+    use_container_width=True
+):
 
-    kullanilabilir_genislik = coil_width - left_trim - right_trim
+    if len(siparisler) == 0:
 
-    st.success("Optimizasyon Başladı")
+        st.error(
+            "Önce Sipariş Excel dosyasını yükleyin."
+        )
 
-    st.write("## Makine Bilgileri")
+    elif coil_width is None or coil_kg is None:
 
-    st.write(f"Mother Coil : {coil_width} mm")
-    st.write(f"Mother Coil Kg : {coil_kg} kg")
-    st.write(f"Sol Fire : {left_trim} mm")
-    st.write(f"Sağ Fire : {right_trim} mm")
-    st.write(f"Kullanılabilir Genişlik : {kullanilabilir_genislik} mm")
+        st.error(
+            "Önce Mother Coil Excel dosyasını yükleyin."
+        )
 
-    if siparis_dosyasi is not None:
+    else:
 
-        st.write("## En Uygun Kombinasyon")
+        kullanilabilir_genislik = (
+            coil_width
+            - left_trim
+            - right_trim
+        )
+
+        st.success("Optimizasyon Başladı")
+
+        st.write("## Makine Bilgileri")
+
+        st.write(
+            f"Mother Coil : {coil_width:.0f} mm"
+        )
+
+        st.write(
+            f"Mother Coil Kg : {coil_kg:.2f} kg"
+        )
+
+        st.write(
+            f"Sol Fire : {left_trim} mm"
+        )
+
+        st.write(
+            f"Sağ Fire : {right_trim} mm"
+        )
+
+        st.write(
+            f"Kullanılabilir Genişlik : "
+            f"{kullanilabilir_genislik:.0f} mm"
+        )
+
+        # -----------------------------
+        # HIZLI KOMBİNASYON
+        # -----------------------------
 
         enler = list(siparisler.keys())
 
@@ -193,8 +250,10 @@ if st.button("🚀 Optimizasyonu Başlat"):
         while len(en_iyi) < max_knife:
 
             uygun_enler = [
-                en for en in sirali_enler
+                en
+                for en in sirali_enler
                 if en <= kalan
+                and siparisler[en] > 0
             ]
 
             if not uygun_enler:
@@ -208,29 +267,57 @@ if st.button("🚀 Optimizasyonu Başlat"):
 
         en_fire = kalan
 
+        # -----------------------------
+        # SONUÇ
+        # -----------------------------
+
         if en_iyi:
 
-            st.success("En uygun kombinasyon bulundu")
+            st.write("## En Uygun Kombinasyon")
 
-            st.write(f"Kombinasyon : {en_iyi}")
-            st.write(f"Toplam Genişlik : {sum(en_iyi)} mm")
-            st.write(f"Fire : {en_fire} mm")
+            st.success(
+                "En uygun kombinasyon bulundu"
+            )
+
+            st.write(
+                f"Kombinasyon : {en_iyi}"
+            )
+
+            st.write(
+                f"Toplam Bant Genişliği : "
+                f"{sum(en_iyi)} mm"
+            )
+
+            st.write(
+                f"Ek Fire : {en_fire} mm"
+            )
+
+            st.write(
+                f"Bant Sayısı : {len(en_iyi)}"
+            )
+
+            # -----------------------------
+            # DİLME PLANI
+            # -----------------------------
 
             st.write("### Dilme Planı")
 
-            bicak_sayisi = len(en_iyi)
-
-            st.write(f"Bıçak Sayısı : {bicak_sayisi}")
-
             plan = []
 
-            for sira, genislik in enumerate(en_iyi, start=1):
+            for sira, genislik in enumerate(
+                en_iyi,
+                start=1
+            ):
 
                 plan.append(
                     {
-                        "Bıçak No": sira,
+                        "Bant No": sira,
                         "En (mm)": genislik,
-                        "Sipariş Kg": round(siparisler[genislik], 2)
+                        "Sipariş Kg":
+                            round(
+                                siparisler[genislik],
+                                2
+                            )
                     }
                 )
 
@@ -241,16 +328,29 @@ if st.button("🚀 Optimizasyonu Başlat"):
                 use_container_width=True
             )
 
-            st.write("### Bıçak Dizilimi")
+            # -----------------------------
+            # DİZİLİM
+            # -----------------------------
 
-            dizilim = [f"Sol Fire {left_trim} mm"]
+            st.write("### Dilme Dizilimi")
+
+            dizilim = [
+                f"Sol Fire {left_trim} mm"
+            ]
 
             for genislik in en_iyi:
-                dizilim.append(f"{genislik} mm")
 
-            dizilim.append(f"Sağ Fire {right_trim} mm")
+                dizilim.append(
+                    f"{genislik} mm"
+                )
 
-            st.write(" | ".join(dizilim))
+            dizilim.append(
+                f"Sağ Fire {right_trim} mm"
+            )
+
+            st.write(
+                " | ".join(dizilim)
+            )
 
             toplam_kontrol = (
                 left_trim
@@ -259,16 +359,28 @@ if st.button("🚀 Optimizasyonu Başlat"):
             )
 
             st.write(
-                f"Toplam Kontrol : {toplam_kontrol} mm / Mother Coil : {coil_width} mm"
+                f"Toplam Kontrol : "
+                f"{toplam_kontrol} mm / "
+                f"Mother Coil : {coil_width:.0f} mm"
             )
 
-            st.write("### Üretilecek Kilogramlar")
+            # -----------------------------
+            # ÜRETİLECEK KG
+            # -----------------------------
+
+            st.write(
+                "### Üretilecek Kilogramlar"
+            )
 
             uretim_plan = []
 
-            for genislik in sorted(set(en_iyi)):
+            for genislik in sorted(
+                set(en_iyi)
+            ):
 
-                adet = en_iyi.count(genislik)
+                adet = en_iyi.count(
+                    genislik
+                )
 
                 tek_bant_kg = (
                     coil_kg
@@ -276,55 +388,113 @@ if st.button("🚀 Optimizasyonu Başlat"):
                     / coil_width
                 )
 
-                toplam_uretim_kg = tek_bant_kg * adet
+                toplam_uretim_kg = (
+                    tek_bant_kg
+                    * adet
+                )
 
                 uretim_plan.append(
                     {
                         "En (mm)": genislik,
                         "Adet": adet,
-                        "Tek Bant Kg": round(tek_bant_kg, 2),
-                        "Toplam Üretim Kg": round(toplam_uretim_kg, 2)
+                        "Tek Bant Kg":
+                            round(
+                                tek_bant_kg,
+                                2
+                            ),
+                        "Toplam Üretim Kg":
+                            round(
+                                toplam_uretim_kg,
+                                2
+                            )
                     }
                 )
 
-            uretim_df = pd.DataFrame(uretim_plan)
+            uretim_df = pd.DataFrame(
+                uretim_plan
+            )
 
             st.dataframe(
                 uretim_df,
                 use_container_width=True
             )
-        kalan_siparisler = siparisler.copy()
 
-        for satir in uretim_plan:
+            # -----------------------------
+            # KALAN SİPARİŞ
+            # -----------------------------
 
-            genislik = satir["En (mm)"]
-            uretilen_kg = satir["Toplam Üretim Kg"]
-
-            kalan_siparisler[genislik] = (
-                kalan_siparisler[genislik]
-                - uretilen_kg
+            kalan_siparisler = (
+                siparisler.copy()
             )
 
-            if kalan_siparisler[genislik] < 0:
-                kalan_siparisler[genislik] = 0
+            for satir in uretim_plan:
 
-        st.write("### Kalan Siparişler")
+                genislik = satir[
+                    "En (mm)"
+                ]
 
-        kalan_plan = []
+                uretilen_kg = satir[
+                    "Toplam Üretim Kg"
+                ]
 
-        for genislik in sorted(kalan_siparisler):
+                kalan_siparisler[
+                    genislik
+                ] -= uretilen_kg
 
-            kalan_plan.append(
-                {
-                    "En (mm)": genislik,
-                    "İlk Sipariş Kg": round(siparisler[genislik], 2),
-                    "Kalan Kg": round(kalan_siparisler[genislik], 2)
-                }
+                if (
+                    kalan_siparisler[
+                        genislik
+                    ] < 0
+                ):
+
+                    kalan_siparisler[
+                        genislik
+                    ] = 0
+
+            st.write(
+                "### Kalan Siparişler"
             )
 
-        kalan_df = pd.DataFrame(kalan_plan)
+            kalan_plan = []
 
-        st.dataframe(
-            kalan_df,
-            use_container_width=True
-        )
+            for genislik in sorted(
+                kalan_siparisler
+            ):
+
+                kalan_plan.append(
+                    {
+                        "En (mm)":
+                            genislik,
+
+                        "İlk Sipariş Kg":
+                            round(
+                                siparisler[
+                                    genislik
+                                ],
+                                2
+                            ),
+
+                        "Kalan Kg":
+                            round(
+                                kalan_siparisler[
+                                    genislik
+                                ],
+                                2
+                            )
+                    }
+                )
+
+            kalan_df = pd.DataFrame(
+                kalan_plan
+            )
+
+            st.dataframe(
+                kalan_df,
+                use_container_width=True
+            )
+
+        else:
+
+            st.error(
+                "Uygun dilme kombinasyonu bulunamadı."
+            )
