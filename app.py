@@ -100,9 +100,14 @@ with col2:
         st.dataframe(df_coil, use_container_width=True)
         
         ilk_coil = df_coil.iloc[0]
+        coil_width = float(ilk_coil["En (mm)"])
+        coil_kg = float(ilk_coil["Kg"])
 
         st.write("### Seçilen İlk Mother Coil")
-
+        
+        st.write(f"Seçilen Coil Genişliği : {coil_width} mm")
+        st.write(f"Seçilen Coil Kg : {coil_kg} kg")
+        
         st.write(ilk_coil)
 
         st.write("### Mother Coil Bilgileri")
