@@ -37,7 +37,13 @@ with col1:
     if siparis_dosyasi is not None:
         df = pd.read_excel(siparis_dosyasi)
         st.dataframe(df, use_container_width=True)
+st.write("### Sipariş Bilgileri")
 
+st.write(f"Toplam Satır : {len(df)}")
+
+st.write("Kolonlar:")
+
+st.write(list(df.columns))
 with col2:
     st.header("📦 Mother Coil Dosyası")
 
