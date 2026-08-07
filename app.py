@@ -177,6 +177,9 @@ if st.button("🚀 Optimizasyonu Başlat"):
 
             st.write("### Dilme Planı")
 
+            bicak_sayisi = len(en_iyi)
+
+st.write(f"Bıçak Sayısı : {bicak_sayisi}")
             plan = []
             for genislik in sorted(set(en_iyi)):
 
@@ -191,7 +194,16 @@ if st.button("🚀 Optimizasyonu Başlat"):
                 )
 
             plan_df = pd.DataFrame(plan)
+plan_df["Sıra"] = range(1, len(plan_df) + 1)
 
+plan_df = plan_df[
+    [
+        "Sıra",
+        "En (mm)",
+        "Adet",
+        "Toplam (mm)"
+    ]
+]
             st.dataframe(
                 plan_df,
                 use_container_width=True
