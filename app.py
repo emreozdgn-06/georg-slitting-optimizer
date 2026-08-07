@@ -164,5 +164,23 @@ if st.button("🚀 Optimizasyonu Başlat"):
             st.write(f"Kombinasyon : {list(en_iyi)}")
 
             st.write(f"Toplam Genişlik : {sum(en_iyi)} mm")
+st.write("### Dilme Planı")
 
+plan = []
+
+for genislik in sorted(set(en_iyi)):
+
+    adet = en_iyi.count(genislik)
+
+    plan.append(
+        {
+            "En (mm)": genislik,
+            "Adet": adet,
+            "Toplam (mm)": genislik * adet
+        }
+    )
+
+plan_df = pd.DataFrame(plan)
+
+st.dataframe(plan_df, use_container_width=True)
             st.write(f"Fire : {en_fire} mm")
