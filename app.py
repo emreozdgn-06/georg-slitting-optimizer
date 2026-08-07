@@ -98,6 +98,12 @@ with col2:
         df_coil = pd.read_excel(coil_dosyasi)
 
         st.dataframe(df_coil, use_container_width=True)
+        
+        ilk_coil = df_coil.iloc[0]
+
+        st.write("### Seçilen İlk Mother Coil")
+
+        st.write(ilk_coil)
 
         st.write("### Mother Coil Bilgileri")
 
