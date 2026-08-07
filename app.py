@@ -234,3 +234,10 @@ if st.button("🚀 Optimizasyonu Başlat"):
             st.write(
                 f"Toplam Kontrol : {toplam_kontrol} mm / Mother Coil : {coil_width} mm"
             )
+            st.write("### Sipariş Durumu")
+
+            for genislik in sorted(siparisler):
+
+                st.write(
+                    f"{genislik} mm : {siparisler[genislik]:.2f} kg"
+                )
