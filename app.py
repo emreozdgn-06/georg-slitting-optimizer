@@ -157,6 +157,7 @@ if st.button("🚀 Optimizasyonu Başlat"):
     st.write(f"Sol Fire : {left_trim} mm")
     st.write(f"Sağ Fire : {right_trim} mm")
     st.write(f"Kullanılabilir Genişlik : {kullanilabilir_genislik} mm")
+
     if siparis_dosyasi is not None:
 
         st.write("## En Uygun Kombinasyon")
@@ -182,6 +183,7 @@ if st.button("🚀 Optimizasyonu Başlat"):
 
                         en_fire = fire
                         en_iyi = komb
+
         if en_iyi:
 
             st.success("En uygun kombinasyon bulundu")
@@ -195,18 +197,18 @@ if st.button("🚀 Optimizasyonu Başlat"):
             bicak_sayisi = len(en_iyi)
 
             st.write(f"Bıçak Sayısı : {bicak_sayisi}")
+
             plan = []
 
-       for sira, genislik in enumerate(en_iyi, start=1):
+            for sira, genislik in enumerate(en_iyi, start=1):
 
-       plan.append(
-        {
-            "Bıçak No": sira,
-            "En (mm)": genislik,
-            "Açıklama": "Bant"
-        }
-    )
-           
+                plan.append(
+                    {
+                        "Bıçak No": sira,
+                        "En (mm)": genislik,
+                        "Açıklama": "Bant"
+                    }
+                )
 
             plan_df = pd.DataFrame(plan)
 
@@ -214,6 +216,3 @@ if st.button("🚀 Optimizasyonu Başlat"):
                 plan_df,
                 use_container_width=True
             )
-
-            
-     
