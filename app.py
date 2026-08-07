@@ -282,11 +282,38 @@ if st.button("🚀 Optimizasyonu Başlat"):
                 uretim_df,
                 use_container_width=True
             )
+                        kalan_siparisler = siparisler.copy()
 
-            st.write("### Sipariş Durumu")
+            for satir in uretim_plan:
 
-            for genislik in sorted(siparisler):
+                genislik = satir["En (mm)"]
+                uretilen_kg = satir["Toplam Üretim Kg"]
 
-                st.write(
-                    f"{genislik} mm : {siparisler[genislik]:.2f} kg"
+                kalan_siparisler[genislik] = (
+                    kalan_siparisler[genislik]
+                    - uretilen_kg
                 )
+
+                if kalan_siparisler[genislik] < 0:
+                    kalan_siparisler[genislik] = 0
+
+                        st.write("### Kalan Siparişler")
+
+            kalan_plan = []
+
+            for genislik in sorted(kalan_siparisler):
+
+                kalan_plan.append(
+                    {
+                        "En (mm)": genislik,
+                        "İlk Sipariş Kg": round(siparisler[genislik], 2),
+                        "Kalan Kg": round(kalan_siparisler[genislik], 2)
+                    }
+                )
+
+            kalan_df = pd.DataFrame(kalan_plan)
+
+            st.dataframe(
+                kalan_df,
+                use_container_width=True
+            )
