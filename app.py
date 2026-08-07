@@ -85,8 +85,9 @@ if st.button("🚀 Optimizasyonu Başlat"):
 
     st.success("Optimizasyon Başladı")
 
-    st.write("### Sonuç")
+    st.write("### Makine Bilgileri")
 
-    st.write(
-        f"Kullanılabilir Genişlik : {kullanilabilir_genislik} mm"
-    )
+    st.write(f"Mother Coil : {coil_width} mm")
+    st.write(f"Sol Fire : {left_trim} mm")
+    st.write(f"Sağ Fire : {right_trim} mm")
+    st.write(f"Kullanılabilir Genişlik : {kullanilabilir_genislik} mm")
