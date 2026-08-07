@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import re
-from itertools import combinations_with_replacement
 from collections import defaultdict
 st.set_page_config(
     page_title="GEORG Slitting Optimizer",
