@@ -99,3 +99,20 @@ if st.button("🚀 Optimizasyonu Başlat"):
     st.write(f"Sol Fire : {left_trim} mm")
     st.write(f"Sağ Fire : {right_trim} mm")
     st.write(f"Kullanılabilir Genişlik : {kullanilabilir_genislik} mm")
+import re
+
+st.write("### Sipariş Listesi")
+
+for i, satir in df.iterrows():
+
+    stok_adi = str(satir["Stok Adı"])
+
+    gereken = satir["Gereken Miktar"]
+
+    sonuc = re.search(r"x(\d+)\s*mm", stok_adi)
+
+    if sonuc:
+
+        genislik = int(sonuc.group(1))
+
+        st.write(f"{genislik} mm  →  {gereken} kg")
