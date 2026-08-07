@@ -207,7 +207,7 @@ if st.button("🚀 Optimizasyonu Başlat"):
                     {
                         "Bıçak No": sira,
                         "En (mm)": genislik,
-                        "Açıklama": "Bant"
+                        "Açıklama": f"{siparisler[genislik]:.2f} kg Sipariş"
                     }
                 )
 
