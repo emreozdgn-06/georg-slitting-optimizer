@@ -7,6 +7,8 @@ st.set_page_config(
     layout="wide"
 )
 
+st.title("⚙️ GEORG Dilme Optimizasyon Sistemi")
+
 st.sidebar.title("⚙️ Menü")
 
 sayfa = st.sidebar.selectbox(
@@ -19,10 +21,12 @@ sayfa = st.sidebar.selectbox(
         "Sonuçlar"
     ]
 )
+
+st.divider()
+
 col1, col2 = st.columns(2)
 
 with col1:
-
     st.header("📄 Sipariş Dosyası")
 
     siparis_dosyasi = st.file_uploader(
@@ -31,13 +35,10 @@ with col1:
     )
 
     if siparis_dosyasi is not None:
-
         df = pd.read_excel(siparis_dosyasi)
-
         st.dataframe(df, use_container_width=True)
 
 with col2:
-
     st.header("📦 Mother Coil Dosyası")
 
     coil_dosyasi = st.file_uploader(
@@ -47,59 +48,9 @@ with col2:
     )
 
     if coil_dosyasi is not None:
-
         df_coil = pd.read_excel(coil_dosyasi)
-
         st.dataframe(df_coil, use_container_width=True)
-st.title("⚙️ GEORG Slitting Optimizer")
 
-st.divider()
-
-col1, col2 = st.columns(2)
-
-with col1:
-
-    st.header("Makine Ayarları")
-
-    coil_width = st.number_input(
-        "Mother Coil Genişliği (mm)",
-        value=1100
-    )
-
-    left_trim = st.number_input(
-        "Sol Fire (mm)",
-        value=5
-    )
-
-    right_trim = st.number_input(
-        "Sağ Fire (mm)",
-        value=5
-    )
-
-    max_knife = st.number_input(
-        "Maksimum Bıçak",
-        value=10
-    )
-
-with col2:
-
-    st.header("Dosyalar")
-
-    order_file = st.file_uploader(
-        "Sipariş Exceli",
-        type=["xlsx"]
-    )
-
-    coil_file = st.file_uploader(
-        "Mother Coil Exceli",
-        type=["xlsx"]
-    )
-
-st.divider()
-
-if st.button("🚀 OPTİMİZASYONU BAŞLAT", use_container_width=True):
-    st.success("Program çalışmaya hazır.")
-    
 st.divider()
 
 st.header("⚙️ Makine Ayarları")
@@ -125,4 +76,4 @@ max_knife = st.number_input(
 )
 
 if st.button("🚀 Optimizasyonu Başlat"):
-    st.success("Optimizasyon başlatıldı.")
+    st.success("Program çalışmaya hazır.")
