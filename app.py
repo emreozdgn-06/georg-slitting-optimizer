@@ -99,19 +99,22 @@ with col2:
         df_coil = pd.read_excel(coil_dosyasi)
 
         st.dataframe(df_coil, use_container_width=True)
-st.write("### Mother Coil Bilgileri")
 
-st.write(f"Toplam Coil : {len(df_coil)}")
+        st.write("### Mother Coil Bilgileri")
 
-st.write("Kolonlar")
+        st.write(f"Toplam Coil : {len(df_coil)}")
 
-st.write(list(df_coil.columns))
-st.write("### Mother Coil Listesi")
+        st.write("Kolonlar")
 
-st.dataframe(
-    df_coil,
-    use_container_width=True
-)
+        st.write(list(df_coil.columns))
+
+        st.write("### Mother Coil Listesi")
+
+        st.dataframe(
+            df_coil,
+            use_container_width=True
+        )
+
 st.divider()
 
 # -----------------------------
