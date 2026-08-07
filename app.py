@@ -216,3 +216,13 @@ if st.button("🚀 Optimizasyonu Başlat"):
                 plan_df,
                 use_container_width=True
             )
+                        st.write("### Bıçak Dizilimi")
+
+            dizilim = [f"Sol Fire {left_trim} mm"]
+
+            for genislik in en_iyi:
+                dizilim.append(f"{genislik} mm")
+
+            dizilim.append(f"Sağ Fire {right_trim} mm")
+
+            st.write("  |  ".join(dizilim))
