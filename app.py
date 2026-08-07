@@ -144,7 +144,6 @@ max_knife = st.number_input(
     "Maksimum Bıçak Sayısı",
     value=10
 )
-
 # -----------------------------
 # OPTİMİZASYON
 # -----------------------------
@@ -158,6 +157,7 @@ if st.button("🚀 Optimizasyonu Başlat"):
     st.write("## Makine Bilgileri")
 
     st.write(f"Mother Coil : {coil_width} mm")
+    st.write(f"Mother Coil Kg : {coil_kg} kg")
     st.write(f"Sol Fire : {left_trim} mm")
     st.write(f"Sağ Fire : {right_trim} mm")
     st.write(f"Kullanılabilir Genişlik : {kullanilabilir_genislik} mm")
@@ -170,41 +170,39 @@ if st.button("🚀 Optimizasyonu Başlat"):
 
         hedef = kullanilabilir_genislik
 
-        en_iyi = None
-        en_fire = 99999
         en_iyi = []
-kalan = hedef
 
-sirali_enler = sorted(
-    enler,
-    key=lambda x: siparisler[x],
-    reverse=True
-)
+        kalan = hedef
 
-while len(en_iyi) < max_knife:
+        sirali_enler = sorted(
+            enler,
+            key=lambda x: siparisler[x],
+            reverse=True
+        )
 
-    uygun_enler = [
-        en for en in sirali_enler
-        if en <= kalan
-    ]
+        while len(en_iyi) < max_knife:
 
-    if not uygun_enler:
-        break
+            uygun_enler = [
+                en for en in sirali_enler
+                if en <= kalan
+            ]
 
-    secilen_en = max(uygun_enler)
+            if not uygun_enler:
+                break
 
-    en_iyi.append(secilen_en)
+            secilen_en = max(uygun_enler)
 
-    kalan -= secilen_en
+            en_iyi.append(secilen_en)
 
-en_fire = kalan
+            kalan -= secilen_en
 
- 
+        en_fire = kalan
+
         if en_iyi:
 
             st.success("En uygun kombinasyon bulundu")
 
-            st.write(f"Kombinasyon : {list(en_iyi)}")
+            st.write(f"Kombinasyon : {en_iyi}")
             st.write(f"Toplam Genişlik : {sum(en_iyi)} mm")
             st.write(f"Fire : {en_fire} mm")
 
@@ -222,7 +220,7 @@ en_fire = kalan
                     {
                         "Bıçak No": sira,
                         "En (mm)": genislik,
-                        "Açıklama": f"{siparisler[genislik]:.2f} kg Sipariş"
+                        "Sipariş Kg": round(siparisler[genislik], 2)
                     }
                 )
 
@@ -244,11 +242,48 @@ en_fire = kalan
 
             st.write(" | ".join(dizilim))
 
-            toplam_kontrol = left_trim + sum(en_iyi) + right_trim
+            toplam_kontrol = (
+                left_trim
+                + sum(en_iyi)
+                + right_trim
+            )
 
             st.write(
                 f"Toplam Kontrol : {toplam_kontrol} mm / Mother Coil : {coil_width} mm"
             )
+
+            st.write("### Üretilecek Kilogramlar")
+
+            uretim_plan = []
+
+            for genislik in sorted(set(en_iyi)):
+
+                adet = en_iyi.count(genislik)
+
+                tek_bant_kg = (
+                    coil_kg
+                    * genislik
+                    / coil_width
+                )
+
+                toplam_uretim_kg = tek_bant_kg * adet
+
+                uretim_plan.append(
+                    {
+                        "En (mm)": genislik,
+                        "Adet": adet,
+                        "Tek Bant Kg": round(tek_bant_kg, 2),
+                        "Toplam Üretim Kg": round(toplam_uretim_kg, 2)
+                    }
+                )
+
+            uretim_df = pd.DataFrame(uretim_plan)
+
+            st.dataframe(
+                uretim_df,
+                use_container_width=True
+            )
+
             st.write("### Sipariş Durumu")
 
             for genislik in sorted(siparisler):
