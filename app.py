@@ -70,9 +70,21 @@ with col1:
 
         st.write("### Toplanmış Siparişler")
 
-        for genislik in sorted(siparisler):
+        st.write("### Toplanmış Siparişler")
 
-            st.write(f"{genislik} mm → {siparisler[genislik]:.2f} kg")
+siparis_df = pd.DataFrame(
+    {
+        "En (mm)": list(siparisler.keys()),
+        "Kg": list(siparisler.values())
+    }
+)
+
+siparis_df = siparis_df.sort_values("En (mm)")
+
+st.dataframe(
+    siparis_df,
+    use_container_width=True
+)
 with col2:
 
     st.header("📦 Mother Coil Dosyası")
