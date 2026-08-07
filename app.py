@@ -175,12 +175,14 @@ if st.button("🚀 Optimizasyonu Başlat"):
             st.write(f"Toplam Genişlik : {sum(en_iyi)} mm")
             st.write(f"Fire : {en_fire} mm")
 
-            st.write("### Dilme Planı")
+                       st.write("### Dilme Planı")
 
             bicak_sayisi = len(en_iyi)
 
-st.write(f"Bıçak Sayısı : {bicak_sayisi}")
+            st.write(f"Bıçak Sayısı : {bicak_sayisi}")
+
             plan = []
+
             for genislik in sorted(set(en_iyi)):
 
                 adet = en_iyi.count(genislik)
@@ -194,21 +196,22 @@ st.write(f"Bıçak Sayısı : {bicak_sayisi}")
                 )
 
             plan_df = pd.DataFrame(plan)
-plan_df["Sıra"] = range(1, len(plan_df) + 1)
 
-plan_df = plan_df[
-    [
-        "Sıra",
-        "En (mm)",
-        "Adet",
-        "Toplam (mm)"
-    ]
-]
+            plan_df["Sıra"] = range(1, len(plan_df) + 1)
+
+            plan_df = plan_df[
+                [
+                    "Sıra",
+                    "En (mm)",
+                    "Adet",
+                    "Toplam (mm)"
+                ]
+            ]
+
             st.dataframe(
                 plan_df,
                 use_container_width=True
             )
-           
 
             
      
