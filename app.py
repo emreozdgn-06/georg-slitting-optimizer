@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import re
+from itertools import combinations_with_replacement
 from collections import defaultdict
 st.set_page_config(
     page_title="GEORG Slitting Optimizer",
@@ -130,3 +131,38 @@ if st.button("🚀 Optimizasyonu Başlat"):
     st.write(f"Sol Fire : {left_trim} mm")
     st.write(f"Sağ Fire : {right_trim} mm")
     st.write(f"Kullanılabilir Genişlik : {kullanilabilir_genislik} mm")
+    if siparis_dosyasi is not None:
+
+        st.write("## En Uygun Kombinasyon")
+
+        enler = list(siparisler.keys())
+
+        hedef = kullanilabilir_genislik
+
+        en_iyi = None
+        en_fire = 99999
+
+        for adet in range(1, max_knife + 1):
+
+            for komb in combinations_with_replacement(enler, adet):
+
+                toplam = sum(komb)
+
+                if toplam <= hedef:
+
+                    fire = hedef - toplam
+
+                    if fire < en_fire:
+
+                        en_fire = fire
+                        en_iyi = komb
+
+        if en_iyi:
+
+            st.success("En uygun kombinasyon bulundu")
+
+            st.write(f"Kombinasyon : {list(en_iyi)}")
+
+            st.write(f"Toplam Genişlik : {sum(en_iyi)} mm")
+
+            st.write(f"Fire : {en_fire} mm")
