@@ -195,33 +195,20 @@ if st.button("🚀 Optimizasyonu Başlat"):
             bicak_sayisi = len(en_iyi)
 
             st.write(f"Bıçak Sayısı : {bicak_sayisi}")
-
             plan = []
 
-            for genislik in sorted(set(en_iyi)):
+       for sira, genislik in enumerate(en_iyi, start=1):
 
-                adet = en_iyi.count(genislik)
-
-                plan.append(
-                    {
-                        "En (mm)": genislik,
-                        "Adet": adet,
-                        "Toplam (mm)": genislik * adet
-                    }
-                )
+       plan.append(
+        {
+            "Bıçak No": sira,
+            "En (mm)": genislik,
+            "Açıklama": "Bant"
+        }
+    )
+           
 
             plan_df = pd.DataFrame(plan)
-
-            plan_df["Sıra"] = range(1, len(plan_df) + 1)
-
-            plan_df = plan_df[
-                [
-                    "Sıra",
-                    "En (mm)",
-                    "Adet",
-                    "Toplam (mm)"
-                ]
-            ]
 
             st.dataframe(
                 plan_df,
