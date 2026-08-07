@@ -172,22 +172,34 @@ if st.button("🚀 Optimizasyonu Başlat"):
 
         en_iyi = None
         en_fire = 99999
+        en_iyi = []
+kalan = hedef
 
-        for adet in range(1, max_knife + 1):
+sirali_enler = sorted(
+    enler,
+    key=lambda x: siparisler[x],
+    reverse=True
+)
 
-            for komb in combinations_with_replacement(enler, adet):
+while len(en_iyi) < max_knife:
 
-                toplam = sum(komb)
+    uygun_enler = [
+        en for en in sirali_enler
+        if en <= kalan
+    ]
 
-                if toplam <= hedef:
+    if not uygun_enler:
+        break
 
-                    fire = hedef - toplam
+    secilen_en = max(uygun_enler)
 
-                    if fire < en_fire:
+    en_iyi.append(secilen_en)
 
-                        en_fire = fire
-                        en_iyi = komb
+    kalan -= secilen_en
 
+en_fire = kalan
+
+ 
         if en_iyi:
 
             st.success("En uygun kombinasyon bulundu")
