@@ -49,36 +49,29 @@ with col1:
         st.dataframe(df, use_container_width=True)
 
         st.write("### Sipariş Bilgileri")
-
         st.write(f"Toplam Satır : {len(df)}")
-
         st.write("Kolonlar")
-
         st.write(list(df.columns))
 
-        st.write("### Sipariş Listesi")
+        siparisler = defaultdict(float)
 
-      siparisler = defaultdict(float)
+        for _, satir in df.iterrows():
 
-for _, satir in df.iterrows():
+            stok = str(satir["Stok Adı"])
+            kg = float(satir["Gereken Miktar"])
 
-    stok = str(satir["Stok Adı"])
+            sonuc = re.search(r"x(\d+)\s*mm", stok)
 
-    kg = float(satir["Gereken Miktar"])
+            if sonuc:
 
-    sonuc = re.search(r"x(\d+)\s*mm", stok)
+                genislik = int(sonuc.group(1))
+                siparisler[genislik] += kg
 
-    if sonuc:
+        st.write("### Toplanmış Siparişler")
 
-        genislik = int(sonuc.group(1))
+        for genislik in sorted(siparisler):
 
-        siparisler[genislik] += kg
-
-st.write("### Toplanmış Siparişler")
-
-for genislik in sorted(siparisler):
-
-    st.write(f"{genislik} mm → {siparisler[genislik]:.2f} kg")
+            st.write(f"{genislik} mm → {siparisler[genislik]:.2f} kg")
 with col2:
 
     st.header("📦 Mother Coil Dosyası")
