@@ -126,7 +126,10 @@ coil_width = st.number_input(
     "Mother Coil Genişliği (mm)",
     value=1100
 )
-
+coil_kg = st.number_input(
+    "Mother Coil Kilogramı (kg)",
+    value=4000
+)
 left_trim = st.number_input(
     "Sol Fire (mm)",
     value=5
