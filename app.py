@@ -145,6 +145,7 @@ max_knife = st.number_input(
 # -----------------------------
 # OPTİMİZASYON
 # -----------------------------
+
 if st.button("🚀 Optimizasyonu Başlat"):
 
     kullanilabilir_genislik = coil_width - left_trim - right_trim
@@ -216,7 +217,8 @@ if st.button("🚀 Optimizasyonu Başlat"):
                 plan_df,
                 use_container_width=True
             )
-                        st.write("### Bıçak Dizilimi")
+
+            st.write("### Bıçak Dizilimi")
 
             dizilim = [f"Sol Fire {left_trim} mm"]
 
@@ -225,4 +227,10 @@ if st.button("🚀 Optimizasyonu Başlat"):
 
             dizilim.append(f"Sağ Fire {right_trim} mm")
 
-            st.write("  |  ".join(dizilim))
+            st.write(" | ".join(dizilim))
+
+            toplam_kontrol = left_trim + sum(en_iyi) + right_trim
+
+            st.write(
+                f"Toplam Kontrol : {toplam_kontrol} mm / Mother Coil : {coil_width} mm"
+            )
