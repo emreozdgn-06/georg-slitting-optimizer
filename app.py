@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import re
-
+from collections import defaultdict
 st.set_page_config(
     page_title="GEORG Slitting Optimizer",
     page_icon="⚙️",
@@ -58,26 +58,27 @@ with col1:
 
         st.write("### Sipariş Listesi")
 
-        if "Stok Adı" in df.columns and "Gereken Miktar" in df.columns:
+      siparisler = defaultdict(float)
 
-            for _, satir in df.iterrows():
+for _, satir in df.iterrows():
 
-                stok = str(satir["Stok Adı"])
+    stok = str(satir["Stok Adı"])
 
-                kg = satir["Gereken Miktar"]
+    kg = float(satir["Gereken Miktar"])
 
-                sonuc = re.search(r"x(\d+)\s*mm", stok)
+    sonuc = re.search(r"x(\d+)\s*mm", stok)
 
-                if sonuc:
+    if sonuc:
 
-                    genislik = int(sonuc.group(1))
+        genislik = int(sonuc.group(1))
 
-                    st.write(f"{genislik} mm → {kg} kg")
+        siparisler[genislik] += kg
 
-        else:
+st.write("### Toplanmış Siparişler")
 
-            st.warning("Excel dosyasında 'Stok Adı' veya 'Gereken Miktar' sütunu bulunamadı.")
+for genislik in sorted(siparisler):
 
+    st.write(f"{genislik} mm → {siparisler[genislik]:.2f} kg")
 with col2:
 
     st.header("📦 Mother Coil Dosyası")
