@@ -76,4 +76,17 @@ max_knife = st.number_input(
 )
 
 if st.button("🚀 Optimizasyonu Başlat"):
-    st.success("Program çalışmaya hazır.")
+
+    kullanilabilir_genislik = (
+        coil_width
+        - left_trim
+        - right_trim
+    )
+
+    st.success("Optimizasyon Başladı")
+
+    st.write("### Sonuç")
+
+    st.write(
+        f"Kullanılabilir Genişlik : {kullanilabilir_genislik} mm"
+    )
