@@ -99,3 +99,29 @@ st.divider()
 
 if st.button("🚀 OPTİMİZASYONU BAŞLAT", use_container_width=True):
     st.success("Program çalışmaya hazır.")
+st.divider()
+
+st.header("⚙️ Makine Ayarları")
+
+coil_width = st.number_input(
+    "Mother Coil Genişliği (mm)",
+    value=1100
+)
+
+left_trim = st.number_input(
+    "Sol Fire (mm)",
+    value=5
+)
+
+right_trim = st.number_input(
+    "Sağ Fire (mm)",
+    value=5
+)
+
+max_knife = st.number_input(
+    "Maksimum Bıçak Sayısı",
+    value=10
+)
+
+if st.button("🚀 Optimizasyonu Başlat"):
+    st.success("Optimizasyon başlatıldı.")
